@@ -1,4 +1,8 @@
-﻿namespace eCommerce.API.Middlewares
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+
+namespace eCommerce.API.Middlewares
 {
     //You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project 
     public class ExceptionHandlingMiddleware
@@ -30,7 +34,15 @@
                 await httpContext.Response.WriteAsJsonAsync(new { Message = ex.Message, Type = ex.GetType().ToString()});
 
             }
-            await _next(httpContext);
+        }
+        // Extension method used to add the middleware to the HTTP request pipeline.
+        
+    }
+    public static class ExceptionHandlingMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ExceptionHandlingMiddleware>();
         }
     }
 }

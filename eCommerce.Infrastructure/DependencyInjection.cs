@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using eCommerce.Core.RepositoryContracts;
+using eCommerce.Infrastructure.Repository;
+using Microsoft.Extensions.DependencyInjection;
 namespace eCommerce.Infrastructure
 {
     public static class DependencyInjection
@@ -12,6 +14,7 @@ namespace eCommerce.Infrastructure
         {
             //TO DO: Add Services to the IOC container 
             //Infrastructure services often include data access, caching and other low-level components.
+            services.AddSingleton<IUsersRepository, UsersRepository>();
             return services;
         }
     }

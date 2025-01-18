@@ -1,14 +1,17 @@
 using eCommerce.Infrastructure;
 using eCommerce.Core;
 using Microsoft.Extensions.DependencyInjection;
+using eCommerce.API.Middlewares;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 //Add Infrastructure Services
 builder.Services.AddInfrastructure();
 builder.Services.AddCore();
-
-//Add controllers to the service collection 
-builder.Services.AddControllers();
+// Add controllers to the service collection
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 //Build the web application
 var app = builder.Build();
 
@@ -22,5 +25,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //Controller routes 
-app.MapGet("/", () => "Hello World!");
+app.MapControllers();
 app.Run();
