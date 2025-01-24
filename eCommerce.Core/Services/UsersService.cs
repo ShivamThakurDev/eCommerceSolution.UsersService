@@ -1,4 +1,5 @@
-﻿using eCommerce.Core.DTO;
+﻿using AutoMapper;
+using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 using eCommerce.Core.RepositoryContracts;
 using eCommerce.Core.ServiceContracts;
@@ -13,9 +14,11 @@ namespace eCommerce.Core.Services
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository _usersRepository;
-        public UsersService(IUsersRepository usersRepository)
+        private readonly IMapper _mapper;
+        public UsersService(IUsersRepository usersRepository,IMapper mapper)
         {
             _usersRepository = usersRepository;
+            _mapper = mapper;
         }
         public async Task<AuthenticationResponse?> Login(LoginRequest loginRequest)
         {
@@ -24,7 +27,8 @@ namespace eCommerce.Core.Services
             {
                 return null;
             }
-            return new AuthenticationResponse(user.UserID,user.Email, user.PersonName,user.Gender,"token",Sucess: true);
+            //return new AuthenticationResponse(user.UserID,user.Email, user.PersonName,user.Gender,"token",Sucess: true);
+            return _mapper.Map<AuthenticationResponse>(user) with { Sucess= true, Token ="token"};
         }
 
         public async Task<AuthenticationResponse?> Register(RegisterRequest registerRequest)
@@ -44,12 +48,13 @@ namespace eCommerce.Core.Services
                return null;
             };
             //Return success response
-            return new AuthenticationResponse(
-                registeredUser.UserID, 
-                registeredUser.Email,
-                registeredUser.PersonName, 
-                registeredUser.Gender,
-                "token", Sucess: true);
+            //return new AuthenticationResponse(
+            //    registeredUser.UserID, 
+            //    registeredUser.Email,
+            //    registeredUser.PersonName, 
+            //    registeredUser.Gender,
+            //    "token", Sucess: true);
+            return _mapper.Map<AuthenticationResponse>(registeredUser) with { Sucess = true, Token ="token"};
         }
     }
 }
