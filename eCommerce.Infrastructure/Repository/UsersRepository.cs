@@ -1,22 +1,20 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 using eCommerce.Core.RepositoryContracts;
 using eCommerce.Infrastructure.DbContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eCommerce.Infrastructure.Repository
 {
     public class UsersRepository : IUsersRepository
     {
         private readonly DapperDbContext _dbContext;
-        public UsersRepository(DapperDbContext dbContext)
+        private readonly IMapper _mapper;
+        public UsersRepository(DapperDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
         public async Task<ApplicationUser?> AddUserAsync(ApplicationUser user)
         {
@@ -38,14 +36,12 @@ namespace eCommerce.Infrastructure.Repository
 
         public async Task<ApplicationUser?> GetUserByEmailAndPassword(string? email, string? password)
         {
-            return new ApplicationUser
-            {
-                UserID = Guid.NewGuid(),
-                Email = email,
-                Password = password,
-                PersonName = "John Doe",
-                Gender = GenderOptions.Male.ToString()
-            };
+            //SQL query to select a user by Email and Password
+            string query = "SELECT * FROM public.\"Users\" WHERE \"Email\" = @Email AND \"Password\" = @Password";
+            var parameters = new { Email = email, Password = password };
+            ApplicationUser? user = await _dbContext.DbConnection.QueryFirstAsync<ApplicationUser>(query,parameters);
+            return user;
         }
     }
 }
+

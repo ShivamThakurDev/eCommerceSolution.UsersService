@@ -14,7 +14,7 @@ namespace eCommerce.API.Controllers
         {
             _usersService = usersService;
         }
-        [Route("register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
         {
             if(registerRequest == null)
